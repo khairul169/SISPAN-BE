@@ -8,11 +8,9 @@ const getAll = async (req, res) => {
     const userId = req.user.id;
 
     const result = await Message.findAll({
-      where: {
-        [Op.or]: { userId, fromId: userId },
-      },
+      where: { userId },
       include: [{ model: User }, { model: User, as: "from" }],
-      group: ["userId"],
+      group: ["fromId"],
       order: [["createdAt", "desc"]],
     });
 
