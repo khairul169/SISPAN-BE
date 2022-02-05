@@ -38,10 +38,6 @@ const login = async (req, res) => {
   }
 };
 
-const validate = async (req, res) => {
-  return response.success(res, req.user);
-};
-
 const register = async (req, res) => {
   try {
     const { username, name, password } = req.body;
@@ -71,6 +67,5 @@ const register = async (req, res) => {
 
 module.exports = {
   login,
-  validate,
   register,
 };

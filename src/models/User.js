@@ -39,6 +39,23 @@ const User = sequelize.define(
     updatedAt: {
       type: Sequelize.DATE,
     },
+    lastOnline: {
+      type: Sequelize.DATE,
+    },
+    isOnline: {
+      type: Sequelize.VIRTUAL,
+      get() {
+        if (!this.lastOnline) {
+          return false;
+        }
+
+        // Get time difference
+        const diff = Date.now() - this.lastOnline;
+
+        // Check if last online is more than 5 minutes ago
+        return diff < 1000 * 60 * 5;
+      },
+    },
   },
   {
     tableName: "users",
