@@ -42,6 +42,10 @@ const User = sequelize.define(
         return value?.length ? value : "Pengguna";
       },
     },
+    photo: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     lastOnline: {
       type: Sequelize.DATE,
     },

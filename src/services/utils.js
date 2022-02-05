@@ -19,6 +19,10 @@ const pageFilter = (query) => {
   return { curPage, pageSize, offset, limit };
 };
 
+const getUrl = (path) => {
+  return process.env.BASE_URL + '/static/' + path;
+}
+
 // Format phone number
 const sanitizeNumber = (no) => {
   let number = no.replace(/([^0-9])/g, "");
@@ -50,6 +54,7 @@ const storeMedia = (data) => {
 module.exports = {
   sanitizeObject,
   pageFilter,
+  getUrl,
   sanitizeNumber,
   storeMedia,
 };

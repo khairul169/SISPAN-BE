@@ -20,12 +20,14 @@ const seed = async () => {
       name: "Konsultan",
       password: bcrypt.hashSync("123", 10),
       role: "consultant",
+      photo: "images/photos/photo-1614289371518-722f2615943d.jpg",
     },
     {
       username: "user",
       name: "User",
       password: bcrypt.hashSync("123", 10),
       role: "user",
+      photo: "images/photos/photo-1603415526960-f7e0328c63b1.jpg",
     },
     {
       username: "user2",

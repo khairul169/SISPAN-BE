@@ -1,5 +1,6 @@
 const Sequelize = require("sequelize");
 const { sequelize } = require("../services/database");
+const { getUrl } = require("../services/utils");
 
 const Product = sequelize.define(
   "product",
