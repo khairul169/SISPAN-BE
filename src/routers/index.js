@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const User = require("../models/User");
 const { useAuth } = require("../services/jwt");
 const response = require("../services/response");
@@ -6,16 +7,18 @@ const router = express.Router();
 
 const auth = require("./auth");
 const message = require("./message");
+const product = require("./product");
 const user = require("./user");
 
 // Public
-// router.use("/static", express.static(path.join(__dirname, "../public")));
+router.use("/static", express.static(path.join(__dirname, "../../public")));
 
 // Base
 router.get("/", (_, res) => res.send("Hey!"));
 
 // Auth
 auth(router);
+
 router.use(useAuth);
 
 router.use(async (req, res, next) => {
@@ -36,5 +39,6 @@ router.use(async (req, res, next) => {
 // Routes
 message(router);
 user(router);
+product(router);
 
 module.exports = router;

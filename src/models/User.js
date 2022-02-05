@@ -32,12 +32,15 @@ const User = sequelize.define(
     role: {
       type: Sequelize.STRING(50),
       defaultValue: "user",
+      // user, admin, consultant
     },
-    createdAt: {
-      type: Sequelize.DATE,
-    },
-    updatedAt: {
-      type: Sequelize.DATE,
+    signature: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      get() {
+        const value = this.getDataValue("signature");
+        return value?.length ? value : "Pengguna";
+      },
     },
     lastOnline: {
       type: Sequelize.DATE,

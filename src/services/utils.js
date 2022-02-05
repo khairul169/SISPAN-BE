@@ -1,6 +1,24 @@
 const fs = require("fs");
 const crypto = require("crypto");
 
+const sanitizeObject = (obj) => {
+  const object = { ...obj };
+  for (let key in object) {
+    if (object[key] == null) {
+      delete object[key];
+    }
+  }
+  return object;
+};
+
+const pageFilter = (query) => {
+  const curPage = parseInt(query.page, 10) || 1;
+  const pageSize = parseInt(query.limit, 10) || 20;
+  const offset = (curPage - 1) * pageSize;
+  const limit = pageSize;
+  return { curPage, pageSize, offset, limit };
+};
+
 // Format phone number
 const sanitizeNumber = (no) => {
   let number = no.replace(/([^0-9])/g, "");
@@ -30,6 +48,8 @@ const storeMedia = (data) => {
 };
 
 module.exports = {
+  sanitizeObject,
+  pageFilter,
   sanitizeNumber,
   storeMedia,
 };
