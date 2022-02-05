@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { sequelize, Op } = require("../services/database");
+const { Op } = require("../services/database");
 const response = require("../services/response");
 const User = require("../models/User");
 const { generateJwt } = require("../services/jwt");
