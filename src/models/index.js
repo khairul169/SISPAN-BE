@@ -3,6 +3,8 @@ const User = require("./User");
 const Message = require("./Message");
 const Product = require("./Product");
 const ProductCategory = require("./ProductCategory");
+const Article = require("./Article");
+const ArticleCategory = require("./ArticleCategory");
 
 /**
  * Model list
@@ -12,6 +14,8 @@ const models = {
   Message,
   Product,
   ProductCategory,
+  Article,
+  ArticleCategory,
 };
 
 /**
@@ -30,6 +34,17 @@ Product.belongsTo(ProductCategory, {
 });
 User.hasMany(Product, { foreignKey: "userId" });
 ProductCategory.hasMany(Product, { foreignKey: "categoryId" });
+
+/**
+ * Article relation
+ */
+Article.belongsTo(User, { foreignKey: "userId" });
+Article.belongsTo(ArticleCategory, {
+  foreignKey: "categoryId",
+  as: "category",
+});
+User.hasMany(Article, { foreignKey: "userId" });
+ArticleCategory.hasMany(Article, { foreignKey: "categoryId" });
 
 /**
  * DB Sync

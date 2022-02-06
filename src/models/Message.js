@@ -21,6 +21,7 @@ const Message = sequelize.define(
   },
   {
     tableName: "messages",
+    paranoid: true,
   }
 );
 

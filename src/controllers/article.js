@@ -7,19 +7,9 @@ const getAll = async (req, res) => {
   try {
     const { query } = req;
     const { offset, limit } = pageFilter(query);
-    const visibilityFilter = ["active", "out_stock"];
-
-    // Item visibility
-    if (
-      (query.user && req.user.id === query.user) ||
-      req.user.role === "admin"
-    ) {
-      visibilityFilter.push("hidden");
-    }
 
     // Item filter
     const filter = sanitizeObject({
-      status: { [Op.in]: visibilityFilter },
       userId: query.user,
       categoryId: query.category,
       name: query.name ? { [Op.like]: `%${query.name}%` } : undefined,
@@ -30,14 +20,8 @@ const getAll = async (req, res) => {
 
     if (query.order) {
       switch (query.order) {
-        case "price_higher":
-          order.unshift(["price", "DESC"]);
-          break;
-        case "price_lower":
-          order.unshift(["price", "ASC"]);
-          break;
-        case "sales":
-          order.unshift(["sales", "DESC"]);
+        case "readCount":
+          order.unshift(["readCount", "DESC"]);
           break;
         case "updated":
           order.unshift(["updatedAt", "DESC"]);
@@ -48,11 +32,11 @@ const getAll = async (req, res) => {
       }
     }
 
-    const result = await models.Product.findAndCountAll({
+    const result = await models.Article.findAndCountAll({
       where: filter,
       include: [
         { model: models.User },
-        { model: models.ProductCategory, as: "category" },
+        { model: models.ArticleCategory, as: "category" },
       ],
       order,
       offset,
@@ -65,18 +49,23 @@ const getAll = async (req, res) => {
   }
 };
 
-const getProduct = async (req, res) => {
+const getArticle = async (req, res) => {
   try {
-    const { productId } = req.params;
-    const result = await models.Product.findOne({
-      where: { id: productId },
+    const { articleId } = req.params;
+    const article = await models.Article.findOne({
+      where: { id: articleId },
       include: [
         { model: models.User },
-        { model: models.ProductCategory, as: "category" },
+        { model: models.ArticleCategory, as: "category" },
       ],
     });
 
-    return response.success(res, result);
+    if (req.query.isRead) {
+      // Increase read count
+      await article.update({ readCount: article.readCount + 1 });
+    }
+
+    return response.success(res, article);
   } catch (err) {
     return response.error(res, err.message);
   }
@@ -84,18 +73,17 @@ const getProduct = async (req, res) => {
 
 const create = async (req, res) => {
   try {
-    const { category, name, image, price, description } = req.body;
+    const { category, title, image, content } = req.body;
 
     const data = {
       userId: req.user.id,
       categoryId: category,
-      name,
+      title,
       image,
-      price,
-      description,
+      content,
     };
 
-    const result = await models.Product.create(data);
+    const result = await models.Article.create(data);
 
     return response.success(res, result);
   } catch (err) {
@@ -105,23 +93,21 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const product = await models.Product.findByPk(req.params.productId || 0);
-    if (!product) {
-      throw new Error("Product not found!");
+    const article = await models.Article.findByPk(req.params.articleId || 0);
+    if (!article) {
+      throw new Error("Article not found!");
     }
 
-    const { category, name, image, price, description, status } = req.body;
+    const { category, title, image, content } = req.body;
 
     const data = sanitizeObject({
       categoryId: category,
-      name,
+      title,
       image,
-      price,
-      description,
-      status,
+      content,
     });
 
-    const result = await product.update(data);
+    const result = await article.update(data);
 
     return response.success(res, result);
   } catch (err) {
@@ -131,12 +117,12 @@ const update = async (req, res) => {
 
 const destroy = async (req, res) => {
   try {
-    const product = await models.Product.findByPk(req.params.productId || 0);
-    if (!product) {
-      throw new Error("Product not found!");
+    const article = await models.Article.findByPk(req.params.articleId || 0);
+    if (!article) {
+      throw new Error("Article not found!");
     }
 
-    await product.destroy();
+    await article.destroy();
 
     return response.success(res, true);
   } catch (err) {
@@ -146,7 +132,7 @@ const destroy = async (req, res) => {
 
 module.exports = {
   getAll,
-  getProduct,
+  getArticle,
   create,
   update,
   destroy,

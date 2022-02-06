@@ -1,8 +1,8 @@
 const Sequelize = require("sequelize");
 const { sequelize } = require("../services/database");
 
-const ProductCategory = sequelize.define(
-  "product_category",
+const ArticleCategory = sequelize.define(
+  "article_category",
   {
     id: {
       type: Sequelize.INTEGER,
@@ -15,9 +15,9 @@ const ProductCategory = sequelize.define(
     },
   },
   {
-    tableName: "product_categories",
+    tableName: "article_categories",
     paranoid: true,
   }
 );
 
-module.exports = ProductCategory;
+module.exports = ArticleCategory;

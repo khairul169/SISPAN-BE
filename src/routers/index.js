@@ -9,6 +9,7 @@ const auth = require("./auth");
 const message = require("./message");
 const product = require("./product");
 const user = require("./user");
+const article = require("./article");
 
 // Public
 router.use("/static", express.static(path.join(__dirname, "../../public")));
@@ -40,5 +41,6 @@ router.use(async (req, res, next) => {
 message(router);
 user(router);
 product(router);
+article(router);
 
 module.exports = router;
