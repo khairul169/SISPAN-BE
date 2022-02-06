@@ -5,17 +5,30 @@ const Product = require("./Product");
 const ProductCategory = require("./ProductCategory");
 const Article = require("./Article");
 const ArticleCategory = require("./ArticleCategory");
+const TransactionCart = require("./TransactionCart");
+const Transaction = require("./Transaction");
+const TransactionItem = require("./TransactionItem");
 
 /**
  * Model list
  */
 const models = {
+  // User
   User,
   Message,
+
+  // Product
   Product,
   ProductCategory,
+
+  // Article
   Article,
   ArticleCategory,
+
+  // Transaction
+  TransactionCart,
+  Transaction,
+  TransactionItem,
 };
 
 /**
@@ -45,6 +58,20 @@ Article.belongsTo(ArticleCategory, {
 });
 User.hasMany(Article, { foreignKey: "userId" });
 ArticleCategory.hasMany(Article, { foreignKey: "categoryId" });
+
+/**
+ * Transaction relation
+ */
+TransactionCart.belongsTo(User, { foreignKey: "userId" });
+TransactionCart.belongsTo(Product, { foreignKey: "productId" });
+User.hasMany(TransactionCart, { foreignKey: "userId" });
+
+TransactionItem.belongsTo(Transaction, { foreignKey: "transactionId" });
+TransactionItem.belongsTo(Product, { foreignKey: "productId" });
+Transaction.hasMany(TransactionItem, {
+  foreignKey: "transactionId",
+  as: "items",
+});
 
 /**
  * DB Sync

@@ -1,6 +1,18 @@
 const fs = require("fs");
 const crypto = require("crypto");
 
+const clamp = (num, minimal, maximal) => {
+  return Math.min(Math.max(num, minimal), maximal);
+};
+
+const arrayGroupBy = (array, key) => {
+  return array.reduce((r, a) => {
+    r[a[key]] = r[a[key]] || [];
+    r[a[key]].push(a);
+    return r;
+  }, {});
+};
+
 const sanitizeObject = (obj) => {
   const object = { ...obj };
   for (let key in object) {
@@ -20,8 +32,8 @@ const pageFilter = (query) => {
 };
 
 const getUrl = (path) => {
-  return process.env.BASE_URL + '/static/' + path;
-}
+  return process.env.BASE_URL + "/static/" + path;
+};
 
 // Format phone number
 const sanitizeNumber = (no) => {
@@ -52,6 +64,8 @@ const storeMedia = (data) => {
 };
 
 module.exports = {
+  clamp,
+  arrayGroupBy,
   sanitizeObject,
   pageFilter,
   getUrl,
