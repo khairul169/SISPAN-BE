@@ -1,6 +1,7 @@
 const express = require("express");
 const path = require("path");
 const User = require("../models/User");
+const UserLocation = require("../models/UserLocation");
 const { useAuth } = require("../services/jwt");
 const response = require("../services/response");
 const router = express.Router();
@@ -25,7 +26,9 @@ router.use(useAuth);
 
 router.use(async (req, res, next) => {
   try {
-    const user = await User.findByPk(req.user.id);
+    const user = await User.findByPk(req.user.id, {
+      include: { model: UserLocation, as: "location" },
+    });
     user.lastOnline = Date.now();
     await user.save();
 

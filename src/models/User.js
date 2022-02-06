@@ -63,6 +63,12 @@ const User = sequelize.define(
         return diff < 1000 * 60 * 5;
       },
     },
+    isAdmin: {
+      type: Sequelize.VIRTUAL,
+      get() {
+        return this.role === "admin";
+      },
+    },
   },
   {
     tableName: "users",

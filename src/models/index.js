@@ -1,5 +1,6 @@
 const { sequelize } = require("../services/database");
 const User = require("./User");
+const UserLocation = require("./UserLocation");
 const Message = require("./Message");
 const Product = require("./Product");
 const ProductCategory = require("./ProductCategory");
@@ -15,6 +16,7 @@ const TransactionItem = require("./TransactionItem");
 const models = {
   // User
   User,
+  UserLocation,
   Message,
 
   // Product
@@ -30,6 +32,12 @@ const models = {
   Transaction,
   TransactionItem,
 };
+
+/**
+ * User relation
+ */
+UserLocation.belongsTo(User, { foreignKey: "userId" });
+User.hasOne(UserLocation, { foreignKey: "userId", as: "location" });
 
 /**
  * Message relation
@@ -76,8 +84,18 @@ Transaction.hasMany(TransactionItem, {
 /**
  * DB Sync
  */
-const migrate = (params) => {
+const migrate = async (params) => {
   return sequelize.sync(params);
 };
 
-module.exports = { models, migrate };
+const insertOrUpdate = async (model, condition, values) => {
+  const find = await model.findOne(condition);
+
+  if (find) {
+    return find.update(values);
+  }
+
+  return model.create({ ...condition, ...values });
+};
+
+module.exports = { models, migrate, insertOrUpdate };

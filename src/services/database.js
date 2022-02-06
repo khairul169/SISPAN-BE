@@ -1,4 +1,4 @@
-const { Sequelize, Op, col } = require("sequelize");
+const { Sequelize, Op, col, literal } = require("sequelize");
 
 const { DB_HOST, DB_USER, DB_PASS, DB_NAME, DB_TYPE } = process.env;
 
@@ -24,6 +24,7 @@ const db = {
   testConnection,
   Op,
   col,
+  literal,
 };
 
 module.exports = db;

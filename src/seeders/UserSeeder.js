@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const UserLocation = require("../models/UserLocation");
 
 const UserSeeder = async () => {
   /**
@@ -32,6 +33,35 @@ const UserSeeder = async () => {
       name: "User2",
       password: bcrypt.hashSync("123", 10),
       role: "user",
+    },
+  ]);
+
+  await UserLocation.bulkCreate([
+    {
+      userId: 3,
+      latitude: 0.87927,
+      longitude: 108.982505,
+      address: "VXHM+P26 Sijangkung, Kota Singkawang, Kalimantan Barat",
+    },
+    {
+      userId: 2,
+      latitude: 0.6039358,
+      longitude: 109.188399,
+      address: "Sijangkung, Singkawang Sel., Kota Singkawang, Kalimantan Barat",
+    },
+    // {
+    //   userId: 1,
+    //   latitude: 0.2477643,
+    //   longitude: 109.2809087,
+    //   address:
+    //     "68QM+J4G, Peniti Dalam I, Segedong, Kab. Mempawah, Kalimantan Barat",
+    // },
+    {
+      userId: 4,
+      latitude: -0.0296433,
+      longitude: 109.3399815,
+      address:
+        "Jl. Siam No.133, Benua Melayu Darat, Kec. Pontianak Sel., Kota Pontianak, Kalimantan Barat 78243",
     },
   ]);
 };

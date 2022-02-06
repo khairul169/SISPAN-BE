@@ -1,5 +1,6 @@
 const fs = require("fs");
 const crypto = require("crypto");
+const { sequelize } = require("./database");
 
 const clamp = (num, minimal, maximal) => {
   return Math.min(Math.max(num, minimal), maximal);
@@ -21,6 +22,22 @@ const sanitizeObject = (obj) => {
     }
   }
   return object;
+};
+
+const haversine = (latitude, longitude, attrName = "distance") => {
+  if (latitude == null || longitude == null) {
+    return false;
+  }
+
+  const lat = parseFloat(latitude);
+  const lng = parseFloat(longitude);
+
+  if (isNaN(lat) || isNaN(lng)) {
+    return false;
+  }
+
+  const str = `6371 * acos(cos(radians(${lat})) * cos(radians(latitude)) * cos(radians(${lng}) - radians(longitude)) + sin(radians(${lat})) * sin(radians(latitude)))`;
+  return [sequelize.literal(str), attrName];
 };
 
 const pageFilter = (query) => {
@@ -68,6 +85,7 @@ module.exports = {
   arrayGroupBy,
   sanitizeObject,
   pageFilter,
+  haversine,
   getUrl,
   sanitizeNumber,
   storeMedia,
