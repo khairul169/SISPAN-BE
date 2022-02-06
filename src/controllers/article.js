@@ -38,6 +38,7 @@ const getAll = async (req, res) => {
         { model: models.User },
         { model: models.ArticleCategory, as: "category" },
       ],
+      attributes: {exclude: ['content']},
       order,
       offset,
       limit,
