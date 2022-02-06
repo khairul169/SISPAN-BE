@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const { sequelize, col, literal } = require("../services/database");
+const { sequelize, col, literal, Op } = require("../services/database");
 const response = require("../services/response");
 const User = require("../models/User");
 const { models, insertOrUpdate } = require("../models");
@@ -36,7 +36,7 @@ const getById = async (req, res) => {
 const search = async (req, res) => {
   try {
     const { query } = req;
-    const criteria = {};
+    const criteria = { id: { [Op.not]: req.user.id } };
     const order = [];
 
     if (query.role) {
