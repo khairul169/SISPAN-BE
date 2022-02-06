@@ -54,7 +54,7 @@ const search = async (req, res) => {
       include: {
         model: models.UserLocation,
         as: "location",
-        attributes: { include: [haversine(query.latitude, query.longitude)] },
+        attributes: { include: query.nearest ? [haversine(query.latitude, query.longitude)] : null },
         required: query.nearest != null,
       },
     });
