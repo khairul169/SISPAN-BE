@@ -26,38 +26,54 @@ const UserSeeder = async () => {
       name: "User",
       password: bcrypt.hashSync("123", 10),
       role: "user",
-      photo: "images/photos/photo-1603415526960-f7e0328c63b1.jpg",
     },
     {
-      username: "user2",
-      name: "User2",
+      username: "mitra",
+      name: "Mitra",
       password: bcrypt.hashSync("123", 10),
-      role: "user",
+      photo: "images/photos/photo-1603415526960-f7e0328c63b1.jpg",
+      role: "mitra",
+      signature: "Penyedia Bibit",
+    },
+    {
+      username: "mitra2",
+      name: "Mitra2",
+      password: bcrypt.hashSync("123", 10),
+      photo: "images/photos/photo-1614289371518-722f2615943d.jpg",
+      role: "mitra",
+      signature: "Penyedia Alat Pertanian",
+    },
+    {
+      username: "mitra3",
+      name: "Mitra3",
+      password: bcrypt.hashSync("123", 10),
+      role: "mitra",
+      signature: "Penyedia Bahan Pangan",
     },
   ]);
 
   await UserLocation.bulkCreate([
     {
-      userId: 3,
+      userId: 4,
       latitude: 0.87927,
       longitude: 108.982505,
       address: "VXHM+P26 Sijangkung, Kota Singkawang, Kalimantan Barat",
     },
     {
-      userId: 2,
+      userId: 5,
       latitude: 0.6039358,
       longitude: 109.188399,
       address: "Sijangkung, Singkawang Sel., Kota Singkawang, Kalimantan Barat",
     },
-    // {
-    //   userId: 1,
-    //   latitude: 0.2477643,
-    //   longitude: 109.2809087,
-    //   address:
-    //     "68QM+J4G, Peniti Dalam I, Segedong, Kab. Mempawah, Kalimantan Barat",
-    // },
     {
-      userId: 4,
+      userId: 3,
+      latitude: 0.2477643,
+      longitude: 109.2809087,
+      address:
+        "68QM+J4G, Peniti Dalam I, Segedong, Kab. Mempawah, Kalimantan Barat",
+    },
+    {
+      userId: 6,
       latitude: -0.0296433,
       longitude: 109.3399815,
       address:

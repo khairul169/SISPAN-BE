@@ -15,7 +15,7 @@ const ProductSeeder = async () => {
 
   await Product.bulkCreate([
     {
-      userId: 3,
+      userId: 5,
       categoryId: 1,
       name: "Sawi Super",
       image: "images/products/sawi.png",
@@ -24,7 +24,7 @@ const ProductSeeder = async () => {
         "Jual beras unggul bermutu tinggi dipanen dengan mesin super canggih. Dirawat dan dibesarkan dengan kasih sayang sehinggamenghasilkan produk berkhasiat tinggi bagi tubuh kita.",
     },
     {
-      userId: 3,
+      userId: 4,
       categoryId: 1,
       name: "Kacang Panjang Mantep",
       image: "images/products/kacang.png",
@@ -48,7 +48,7 @@ const ProductSeeder = async () => {
       description: "Ini Benih Sawi Uwogh",
     },
     {
-      userId: 3,
+      userId: 5,
       categoryId: 1,
       name: "Jagung Markotop",
       image: "images/products/jagung.png",
@@ -56,7 +56,7 @@ const ProductSeeder = async () => {
       description: "Ini Jagung Markotop",
     },
     {
-      userId: 4,
+      userId: 3,
       categoryId: 3,
       name: "Beras Mantul",
       image: "images/products/beras.png",
