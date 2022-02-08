@@ -125,7 +125,7 @@ const checkout = async (req, res) => {
         {
           model: models.Product,
           required: true,
-          attributes: ["price"],
+          attributes: ["price", "sales"],
           include: { model: models.User, attributes: ["id"] },
         },
       ],
@@ -146,7 +146,7 @@ const checkout = async (req, res) => {
       };
     });
 
-    const result = {id: null};
+    const result = { id: null };
 
     await Promise.all(
       group.map(async (cart) => {
@@ -180,6 +180,13 @@ const checkout = async (req, res) => {
               },
               { transaction: tx }
             );
+
+            // Increment sales counter
+            // const totalSales = item.product.sales + item.qty;
+            // await models.Product.update(
+            //   { sales: totalSales },
+            //   { where: { id: item.productId }, transaction: tx }
+            // );
 
             // Remove from user cart
             await models.TransactionCart.destroy({

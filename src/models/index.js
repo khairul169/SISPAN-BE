@@ -2,6 +2,7 @@ const { sequelize } = require("../services/database");
 const User = require("./User");
 const UserLocation = require("./UserLocation");
 const Message = require("./Message");
+const MessageBox = require("./MessageBox");
 const Product = require("./Product");
 const ProductCategory = require("./ProductCategory");
 const Article = require("./Article");
@@ -18,6 +19,7 @@ const models = {
   User,
   UserLocation,
   Message,
+  MessageBox,
 
   // Product
   Product,
@@ -44,6 +46,8 @@ User.hasOne(UserLocation, { foreignKey: "userId", as: "location" });
  */
 Message.belongsTo(User, { foreignKey: "userId" });
 Message.belongsTo(User, { foreignKey: "fromId", as: "from" });
+MessageBox.belongsTo(User, { foreignKey: "userId" });
+MessageBox.belongsTo(User, { foreignKey: "recipientId", as: "recipient" });
 
 /**
  * Product relation
@@ -93,7 +97,7 @@ const migrate = async (params) => {
 };
 
 const insertOrUpdate = async (model, condition, values) => {
-  const find = await model.findOne(condition);
+  const find = await model.findOne({ where: condition });
 
   if (find) {
     return find.update(values);

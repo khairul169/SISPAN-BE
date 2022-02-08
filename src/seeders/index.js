@@ -7,7 +7,7 @@ const seed = async () => {
   await UserSeeder();
   await ProductSeeder();
   await ArticleSeeder();
-  await TransactionSeeder();
+  // await TransactionSeeder();
 };
 
 module.exports = seed;
