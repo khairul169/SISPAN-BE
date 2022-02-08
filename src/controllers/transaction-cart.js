@@ -146,6 +146,8 @@ const checkout = async (req, res) => {
       };
     });
 
+    const result = {id: null};
+
     await Promise.all(
       group.map(async (cart) => {
         // Create transaction data
@@ -161,6 +163,10 @@ const checkout = async (req, res) => {
           },
           { transaction: tx }
         );
+
+        if (!result.id) {
+          result.id = transaction.id;
+        }
 
         await Promise.all(
           cart.items.map(async (item) => {
@@ -187,7 +193,7 @@ const checkout = async (req, res) => {
 
     await tx.commit();
 
-    return response.success(res, group);
+    return response.success(res, result);
   } catch (err) {
     await tx.rollback();
     return response.error(res, err.message);
