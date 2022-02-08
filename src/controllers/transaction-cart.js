@@ -1,9 +1,9 @@
 const { models } = require("../models");
 const { clamp, arrayGroupBy } = require("../services/utils");
 const response = require("../services/response");
-const { col } = require("../services/database");
+const { col, sequelize } = require("../services/database");
 
-const getCartItems = async (req, res) => {
+const getItems = async (req, res) => {
   try {
     const items = await models.TransactionCart.findAndCountAll({
       where: { userId: req.user.id },
@@ -48,7 +48,7 @@ const getCartItems = async (req, res) => {
   }
 };
 
-const putCartItem = async (req, res) => {
+const store = async (req, res) => {
   try {
     const { product } = req.body;
 
@@ -56,6 +56,14 @@ const putCartItem = async (req, res) => {
       userId: req.user.id,
       productId: product,
     };
+
+    const productData = await models.Product.findByPk(product, {
+      attributes: ["userId"],
+    });
+
+    if (productData.userId === data.userId) {
+      throw new Error("Tidak dapat menambahkan produk milik pribadi!");
+    }
 
     const exist = await models.TransactionCart.findOne({ where: data });
     let result;
@@ -72,7 +80,7 @@ const putCartItem = async (req, res) => {
   }
 };
 
-const updateCartItem = async (req, res) => {
+const update = async (req, res) => {
   try {
     const item = await models.TransactionCart.findByPk(req.params.id || 0);
     if (!item) {
@@ -92,7 +100,7 @@ const updateCartItem = async (req, res) => {
   }
 };
 
-const destroyCartItem = async (req, res) => {
+const destroy = async (req, res) => {
   try {
     const item = await models.TransactionCart.findByPk(req.params.id || 0);
     if (!item) {
@@ -107,9 +115,89 @@ const destroyCartItem = async (req, res) => {
   }
 };
 
+const checkout = async (req, res) => {
+  const tx = await sequelize.transaction();
+
+  try {
+    const cartResult = await models.TransactionCart.findAll({
+      where: { userId: req.user.id },
+      include: [
+        {
+          model: models.Product,
+          required: true,
+          attributes: ["price"],
+          include: { model: models.User, attributes: ["id"] },
+        },
+      ],
+      attributes: { include: [[col("product.userId"), "sellerId"]] },
+      order: [["id", "DESC"]],
+      raw: true,
+      nest: true,
+    });
+
+    let group = arrayGroupBy(cartResult, "sellerId");
+    group = Object.values(group).map((item) => {
+      return {
+        user: item[0].product.user,
+        total: item.reduce((sum, i) => {
+          return sum + i.product.price * i.qty;
+        }, 0),
+        items: item,
+      };
+    });
+
+    await Promise.all(
+      group.map(async (cart) => {
+        // Create transaction data
+        const transaction = await models.Transaction.create(
+          {
+            userId: req.user.id,
+            sellerId: cart.user.id,
+            total: cart.total,
+            charge: 0,
+            discount: 0,
+            grandTotal: cart.total,
+            status: "pending",
+          },
+          { transaction: tx }
+        );
+
+        await Promise.all(
+          cart.items.map(async (item) => {
+            // Add transaction items
+            await models.TransactionItem.create(
+              {
+                transactionId: transaction.id,
+                productId: item.productId,
+                price: item.product.price,
+                qty: item.qty,
+              },
+              { transaction: tx }
+            );
+
+            // Remove from user cart
+            await models.TransactionCart.destroy({
+              where: { id: item.id },
+              transaction: tx,
+            });
+          })
+        );
+      })
+    );
+
+    await tx.commit();
+
+    return response.success(res, group);
+  } catch (err) {
+    await tx.rollback();
+    return response.error(res, err.message);
+  }
+};
+
 module.exports = {
-  getCartItems,
-  putCartItem,
-  updateCartItem,
-  destroyCartItem,
+  getItems,
+  store,
+  update,
+  destroy,
+  checkout,
 };

@@ -15,6 +15,10 @@ const TransactionItem = sequelize.define(
     productId: {
       type: Sequelize.INTEGER,
     },
+    price: {
+      type: Sequelize.DOUBLE,
+      defaultValue: 0,
+    },
     qty: {
       type: Sequelize.INTEGER,
       defaultValue: 1,
@@ -22,7 +26,7 @@ const TransactionItem = sequelize.define(
     total: {
       type: Sequelize.VIRTUAL,
       get() {
-        return this.product ? this.product.price * this.qty : 0;
+        return this.price * this.qty;
       },
     },
   },

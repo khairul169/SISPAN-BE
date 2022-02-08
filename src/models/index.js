@@ -81,6 +81,10 @@ Transaction.hasMany(TransactionItem, {
   as: "items",
 });
 
+Transaction.belongsTo(User, { foreignKey: "userId" });
+Transaction.belongsTo(User, { foreignKey: "sellerId", as: "seller" });
+User.hasMany(Transaction, { foreignKey: "userId" });
+
 /**
  * DB Sync
  */

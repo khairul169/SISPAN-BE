@@ -1,6 +1,13 @@
 const Sequelize = require("sequelize");
 const { sequelize } = require("../services/database");
 
+const transactionStatus = {
+  pending: "Menunggu Konfirmasi",
+  processed: "Diproses",
+  completed: "Selesai",
+  canceled: "Dibatalkan",
+};
+
 const Transaction = sequelize.define(
   "transaction",
   {
@@ -32,8 +39,13 @@ const Transaction = sequelize.define(
       defaultValue: 0,
     },
     status: {
-      type: Sequelize.ENUM("pending", "processed", "completed", "canceled"),
-      defaultValue: "pending",
+      type: Sequelize.ENUM(Object.keys(transactionStatus)),
+    },
+    statusText: {
+      type: Sequelize.VIRTUAL,
+      get() {
+        return transactionStatus[this.status];
+      },
     },
   },
   {
