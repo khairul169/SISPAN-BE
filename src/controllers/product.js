@@ -1,3 +1,4 @@
+const fs = require("fs");
 const { models } = require("../models");
 const { Op } = require("../services/database");
 const { sanitizeObject, pageFilter } = require("../services/utils");
@@ -82,17 +83,37 @@ const getProduct = async (req, res) => {
   }
 };
 
+const processImageUpload = (body, files, product) => {
+  const bodyImages = Array.isArray(body.images) ? body.images : [body.images];
+  const images = product
+    ? product.images.filter((img) => bodyImages.includes(img))
+    : [];
+
+  files?.forEach((file) => {
+    if (images?.length >= 6) {
+      fs.unlink(file.path, () => {});
+      return;
+    }
+
+    const filePath = `uploads/products/${file.filename}`;
+    images.push(filePath);
+  });
+
+  return images;
+};
+
 const create = async (req, res) => {
   try {
-    const { category, name, image, price, description } = req.body;
+    const { category, name, price, description } = req.body;
+    const images = processImageUpload(req.body, req.files);
 
     const data = {
       userId: req.user.id,
       categoryId: category,
       name,
-      image,
       price,
       description,
+      images,
     };
 
     const result = await models.Product.create(data);
@@ -110,15 +131,16 @@ const update = async (req, res) => {
       throw new Error("Product not found!");
     }
 
-    const { category, name, image, price, description, status } = req.body;
+    const { category, name, price, description, status } = req.body;
+    const images = processImageUpload(req.body, req.files, product);
 
     const data = sanitizeObject({
       categoryId: category,
       name,
-      image,
       price,
       description,
       status,
+      images,
     });
 
     const result = await product.update(data);

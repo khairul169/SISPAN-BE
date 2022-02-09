@@ -19,8 +19,20 @@ const Product = sequelize.define(
       type: Sequelize.STRING,
     },
     image: {
-      type: Sequelize.STRING,
-      allowNull: true,
+      type: Sequelize.VIRTUAL,
+      get() {
+        return this.images?.length ? this.images[0] : null;
+      },
+    },
+    images: {
+      type: Sequelize.TEXT,
+      defaultValue: "[]",
+      get() {
+        return JSON.parse(this.getDataValue("images"));
+      },
+      set(value) {
+        this.setDataValue("images", JSON.stringify(value));
+      },
     },
     price: {
       type: Sequelize.DOUBLE,
