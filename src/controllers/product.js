@@ -104,6 +104,12 @@ const processImageUpload = (body, files, product) => {
 
 const create = async (req, res) => {
   try {
+    if (req.user.role === "user") {
+      throw new Error(
+        "Maaf, saat ini hanya mitra yang dapat menambah produk marketplace. Silahkan hubungi admin untuk menjadi Mitra SISPAN."
+      );
+    }
+
     const { category, name, price, description } = req.body;
     const images = processImageUpload(req.body, req.files);
 

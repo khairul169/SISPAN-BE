@@ -28,11 +28,18 @@ const UserSeeder = async () => {
       role: "user",
     },
     {
+      username: "user2",
+      name: "User2",
+      password: bcrypt.hashSync("123", 10),
+      role: "user2",
+    },
+    {
       username: "mitra",
       name: "Mitra",
       password: bcrypt.hashSync("123", 10),
       photo: "images/photos/photo-1603415526960-f7e0328c63b1.jpg",
       role: "mitra",
+      phone: "0812342359235",
       signature: "Penyedia Bibit",
     },
     {
@@ -41,6 +48,7 @@ const UserSeeder = async () => {
       password: bcrypt.hashSync("123", 10),
       photo: "images/photos/photo-1614289371518-722f2615943d.jpg",
       role: "mitra",
+      phone: "08956959235",
       signature: "Penyedia Alat Pertanian",
     },
     {
