@@ -16,15 +16,16 @@ const getItems = async (req, res) => {
       ],
       attributes: { include: [[col("product.userId"), "sellerId"]] },
       order: [["id", "DESC"]],
-      raw: true,
-      nest: true,
+      // raw: true,
+      // nest: true,
     });
 
-    const total = items.rows.reduce((sum, item) => {
+    const plainRows = items.rows.map((el) => el.get({ plain: true }));
+    const total = plainRows.reduce((sum, item) => {
       return sum + item.product.price * item.qty;
     }, 0);
 
-    let rows = arrayGroupBy(items.rows, "sellerId");
+    let rows = arrayGroupBy(plainRows, "sellerId");
     rows = Object.values(rows).map((item) => {
       return {
         user: item[0].product.user,

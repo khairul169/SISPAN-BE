@@ -49,7 +49,10 @@ const getAll = async (req, res) => {
         {
           model: models.TransactionItem,
           as: "items",
-          include: { model: models.Product, attributes: ["name", "image"] },
+          include: {
+            model: models.Product,
+            attributes: ["name", "image", "images"],
+          },
         },
       ],
       order: [order],

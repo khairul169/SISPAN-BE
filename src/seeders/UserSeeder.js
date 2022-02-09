@@ -28,12 +28,6 @@ const UserSeeder = async () => {
       role: "user",
     },
     {
-      username: "user2",
-      name: "User2",
-      password: bcrypt.hashSync("123", 10),
-      role: "user2",
-    },
-    {
       username: "mitra",
       name: "Mitra",
       password: bcrypt.hashSync("123", 10),
@@ -57,6 +51,12 @@ const UserSeeder = async () => {
       password: bcrypt.hashSync("123", 10),
       role: "mitra",
       signature: "Penyedia Bahan Pangan",
+    },
+    {
+      username: "user2",
+      name: "User2",
+      password: bcrypt.hashSync("123", 10),
+      role: "user2",
     },
   ]);
 
