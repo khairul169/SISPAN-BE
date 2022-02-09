@@ -12,6 +12,7 @@ const product = require("./product");
 const user = require("./user");
 const article = require("./article");
 const transaction = require("./transaction");
+const map = require("./map");
 
 // Public
 router.use("/static", express.static(path.join(__dirname, "../../public")));
@@ -47,5 +48,6 @@ user(router);
 product(router);
 article(router);
 transaction(router);
+map(router);
 
 module.exports = router;

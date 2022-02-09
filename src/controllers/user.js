@@ -5,9 +5,9 @@ const User = require("../models/User");
 const { models, insertOrUpdate } = require("../models");
 const { haversine, sanitizeObject } = require("../services/utils");
 
-const getUser = async (req, res) => {
-  return response.success(res, req.user);
-};
+// const getUser = async (req, res) => {
+//   return response.success(res, req.user);
+// };
 
 const getById = async (req, res) => {
   try {
@@ -19,7 +19,7 @@ const getById = async (req, res) => {
       locationDistanceAttr.push(haversine(latitude, longitude));
     }
 
-    const result = await models.User.findByPk(userId || 0, {
+    const result = await models.User.findByPk(userId || req.user.id, {
       include: {
         model: models.UserLocation,
         as: "location",
@@ -54,7 +54,11 @@ const search = async (req, res) => {
       include: {
         model: models.UserLocation,
         as: "location",
-        attributes: { include: query.nearest ? [haversine(query.latitude, query.longitude)] : null },
+        attributes: {
+          include: query.nearest
+            ? [haversine(query.latitude, query.longitude)]
+            : null,
+        },
         required: query.nearest != null,
       },
     });
@@ -101,7 +105,16 @@ const update = async (req, res) => {
       throw new Error("Cannot find user!");
     }
 
-    const { username, name, password, email, phone, role, location } = req.body;
+    const {
+      username,
+      name,
+      password,
+      email,
+      phone,
+      role,
+      signature,
+      location,
+    } = req.body;
 
     const data = sanitizeObject({
       username,
@@ -109,6 +122,7 @@ const update = async (req, res) => {
       email,
       phone,
       role: req.user.isAdmin ? role : null,
+      signature,
       location,
     });
 
@@ -137,7 +151,7 @@ const update = async (req, res) => {
 };
 
 module.exports = {
-  getUser,
+  // getUser,
   getById,
   search,
   // create,
