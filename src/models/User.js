@@ -32,7 +32,7 @@ const User = sequelize.define(
     role: {
       type: Sequelize.STRING(50),
       defaultValue: "user",
-      // user, admin, consultant
+      // user, admin, consultant, mitra
     },
     signature: {
       type: Sequelize.STRING,
@@ -40,6 +40,9 @@ const User = sequelize.define(
       get() {
         const value = this.getDataValue("signature");
         return value?.length ? value : "Pengguna";
+      },
+      set(value) {
+        this.setDataValue("signature", value !== "Pengguna" ? value : null);
       },
     },
     photo: {

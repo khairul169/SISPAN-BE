@@ -3,7 +3,7 @@ const { sequelize, col, literal, Op } = require("../services/database");
 const response = require("../services/response");
 const User = require("../models/User");
 const { models, insertOrUpdate } = require("../models");
-const { haversine, sanitizeObject } = require("../services/utils");
+const { haversine, sanitizeObject, pageFilter } = require("../services/utils");
 
 // const getUser = async (req, res) => {
 //   return response.success(res, req.user);
@@ -36,8 +36,19 @@ const getById = async (req, res) => {
 const search = async (req, res) => {
   try {
     const { query } = req;
-    const criteria = { id: { [Op.not]: req.user.id } };
+    const { offset, limit } = pageFilter(query);
+    const criteria = !req.user.isAdmin ? { id: { [Op.not]: req.user.id } } : {};
     const order = [];
+
+    if (query.name) {
+      const rules = { [Op.like]: `%${query.name}%` };
+      criteria[Op.or] = [
+        { name: rules },
+        { phone: rules },
+        { email: rules },
+        { username: rules },
+      ];
+    }
 
     if (query.role) {
       criteria.role = query.role;
@@ -47,10 +58,11 @@ const search = async (req, res) => {
       order.unshift([literal("`location.distance`"), "ASC"]);
     }
 
-    const result = await User.findAll({
+    const options = {
       where: criteria,
       order: query.random ? sequelize.random() : [...order, ["name", "ASC"]],
-      limit: parseInt(query.limit, 10) || 10,
+      offset,
+      limit,
       include: {
         model: models.UserLocation,
         as: "location",
@@ -61,7 +73,15 @@ const search = async (req, res) => {
         },
         required: query.nearest != null,
       },
-    });
+    };
+
+    let result;
+
+    if (query.limit) {
+      result = await User.findAndCountAll(options);
+    } else {
+      result = await User.findAll(options);
+    }
 
     return response.success(res, result);
   } catch (err) {
@@ -121,7 +141,7 @@ const update = async (req, res) => {
       name,
       email,
       phone,
-      role: req.user.isAdmin ? role : null,
+      role: req.user.isAdmin && !user.isAdmin ? role : null,
       signature,
       location,
     });

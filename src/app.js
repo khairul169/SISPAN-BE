@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const morgan = require("morgan");
+const cors = require("cors");
 const router = require("./routers");
 const db = require("./services/database");
 const { migrate } = require("./models");
@@ -10,6 +11,7 @@ const app = express();
 // Set base url
 app.locals.baseUrl = process.env.BASE_URL;
 
+app.use(cors());
 app.use(bodyParser.json());
 // app.use(morgan("combined"));
 app.use(router);
