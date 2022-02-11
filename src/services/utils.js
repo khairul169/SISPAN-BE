@@ -17,7 +17,10 @@ const arrayGroupBy = (array, key) => {
 const sanitizeObject = (obj) => {
   const object = { ...obj };
   for (let key in object) {
-    if (object[key] == null) {
+    if (
+      object[key] == null ||
+      (typeof object[key] === "string" && !object[key].length)
+    ) {
       delete object[key];
     }
   }
@@ -40,7 +43,11 @@ const haversine = (latitude, longitude, attrName = "distance") => {
   return [sequelize.literal(str), attrName];
 };
 
-const pageFilter = (query) => {
+const pageFilter = (query, showAll = false) => {
+  if (showAll && !query?.limit) {
+    return { offset: null, limit: null };
+  }
+
   const curPage = parseInt(query.page, 10) || 1;
   const pageSize = parseInt(query.limit, 10) || 20;
   const offset = (curPage - 1) * pageSize;

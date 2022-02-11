@@ -141,7 +141,7 @@ const update = async (req, res) => {
       name,
       email,
       phone,
-      role: req.user.isAdmin && !user.isAdmin ? role : null,
+      role: req.user.isAdmin && user.id !== 1 ? role : null,
       signature,
       location,
     });
@@ -170,10 +170,36 @@ const update = async (req, res) => {
   }
 };
 
+const destroy = async (req, res) => {
+  try {
+    if (!req.user.isAdmin) {
+      throw new Error("Access denied!");
+    }
+
+    const user = await User.findByPk(req.params.userId || 0);
+
+    if (user.id === 1) {
+      throw new Error("Cannot delete super admin!");
+    }
+
+    if (!user) {
+      throw new Error("Cannot find user!");
+    }
+
+    // Update user data
+    await user.destroy();
+
+    return response.success(res, true);
+  } catch (err) {
+    return response.error(res, err.message);
+  }
+};
+
 module.exports = {
   // getUser,
   getById,
   search,
   // create,
   update,
+  destroy,
 };

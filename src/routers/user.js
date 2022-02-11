@@ -7,4 +7,5 @@ module.exports = (router) => {
   router.get("/user/:userId?", user.getById);
   // router.post("/user", user.create);
   router.patch("/user/:userId?", user.update);
+  router.delete("/user/:userId", user.destroy);
 };

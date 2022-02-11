@@ -23,7 +23,7 @@ const getAll = async (req, res) => {
       status: { [Op.in]: visibilityFilter },
       userId: query.user,
       categoryId: query.category,
-      name: query.name ? { [Op.like]: `%${query.name}%` } : undefined,
+      name: query.name && { [Op.like]: `%${query.name || ""}%` },
     });
 
     // Item sorting
@@ -52,7 +52,7 @@ const getAll = async (req, res) => {
     const result = await models.Product.findAndCountAll({
       where: filter,
       include: [
-        { model: models.User },
+        { model: models.User, required: true },
         { model: models.ProductCategory, as: "category" },
       ],
       order,
