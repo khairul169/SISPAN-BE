@@ -52,26 +52,26 @@ const User = sequelize.define(
     lastOnline: {
       type: Sequelize.DATE,
     },
-    isOnline: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        if (!this.lastOnline) {
-          return false;
-        }
+    // isOnline: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     if (!this.lastOnline) {
+    //       return false;
+    //     }
 
-        // Get time difference
-        const diff = Date.now() - this.lastOnline;
+    //     // Get time difference
+    //     const diff = Date.now() - this.lastOnline;
 
-        // Check if last online is more than 5 minutes ago
-        return diff < 1000 * 60 * 5;
-      },
-    },
-    isAdmin: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return this.role === "admin";
-      },
-    },
+    //     // Check if last online is more than 5 minutes ago
+    //     return diff < 1000 * 60 * 5;
+    //   },
+    // },
+    // isAdmin: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     return this.role === "admin";
+    //   },
+    // },
     // deviceId: {
     //   type: Sequelize.STRING,
     //   allowNull: true,

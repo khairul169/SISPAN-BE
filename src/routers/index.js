@@ -35,6 +35,7 @@ router.use(async (req, res, next) => {
 
     req.jwtData = req.user;
     req.user = user;
+    req.user.isAdmin = user.role === "admin";
 
     next();
   } catch (err) {

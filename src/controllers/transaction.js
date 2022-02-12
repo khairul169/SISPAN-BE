@@ -51,7 +51,7 @@ const getAll = async (req, res) => {
           as: "items",
           include: {
             model: models.Product,
-            attributes: ["name", "image", "images"],
+            attributes: ["name", "images"],
           },
         },
       ],

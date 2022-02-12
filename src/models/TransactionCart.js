@@ -19,12 +19,12 @@ const TransactionCart = sequelize.define(
       type: Sequelize.INTEGER,
       defaultValue: 1,
     },
-    total: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return this.product ? this.product.price * this.qty : 0;
-      },
-    },
+    // total: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     return this.product ? this.product.price * this.qty : 0;
+    //   },
+    // },
   },
   {
     tableName: "transaction_cart",

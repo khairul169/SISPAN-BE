@@ -41,12 +41,12 @@ const Transaction = sequelize.define(
     status: {
       type: Sequelize.ENUM(Object.keys(transactionStatus)),
     },
-    statusText: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return transactionStatus[this.status];
-      },
-    },
+    // statusText: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     return transactionStatus[this.status];
+    //   },
+    // },
   },
   {
     tableName: "transaction",

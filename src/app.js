@@ -8,13 +8,10 @@ const { migrate } = require("./models");
 const seed = require("./seeders");
 const app = express();
 
-// Set base url
-app.locals.baseUrl = process.env.BASE_URL;
-
 app.use(cors());
 app.use(bodyParser.json());
 // app.use(morgan("combined"));
-app.use(router);
+app.use(process.env.BASE_URL, router);
 
 const main = async () => {
   // Start rest api server

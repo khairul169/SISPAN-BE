@@ -18,12 +18,12 @@ const Product = sequelize.define(
     name: {
       type: Sequelize.STRING,
     },
-    image: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return this.images?.length ? this.images[0] : null;
-      },
-    },
+    // image: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     return this.images?.length ? this.images[0] : null;
+    //   },
+    // },
     images: {
       type: Sequelize.TEXT,
       defaultValue: "[]",

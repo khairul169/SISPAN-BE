@@ -23,12 +23,12 @@ const TransactionItem = sequelize.define(
       type: Sequelize.INTEGER,
       defaultValue: 1,
     },
-    total: {
-      type: Sequelize.VIRTUAL,
-      get() {
-        return this.price * this.qty;
-      },
-    },
+    // total: {
+    //   type: Sequelize.VIRTUAL,
+    //   get() {
+    //     return this.price * this.qty;
+    //   },
+    // },
   },
   {
     tableName: "transaction_item",
