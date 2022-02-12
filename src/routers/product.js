@@ -15,7 +15,7 @@ module.exports = (router) => {
   // Product
   router.get("/product", product.getAll);
   router.get("/product/:productId", product.getProduct);
-  router.post("/product", imgUpload, compress, product.create);
+  router.post("/product", imgUpload, compress(), product.create);
   router.delete("/product/:productId", product.destroy);
-  router.patch("/product/:productId", imgUpload, compress, product.update);
+  router.patch("/product/:productId", imgUpload, compress(), product.update);
 };

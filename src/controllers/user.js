@@ -136,11 +136,20 @@ const update = async (req, res) => {
       location,
     } = req.body;
 
+    let photo;
+
+    if (req.file) {
+      photo = `uploads/photos/${req.file.filename}`;
+    }
+
+    console.log('PHOTO', photo)
+
     const data = sanitizeObject({
       username,
       name,
       email,
       phone,
+      photo,
       role: req.user.isAdmin && user.id !== 1 ? role : null,
       signature,
       location,

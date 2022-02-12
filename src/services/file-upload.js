@@ -30,14 +30,16 @@ const upload = (destPath, prefix) => {
   });
 };
 
-const compress = async (req, _, next) => {
+const compress = (resize) => async (req, _, next) => {
   if (!req.files?.length) {
     return next();
   }
 
   const promises = req.files.map(async (file) => {
     const buffer = await sharp(file.path)
-      .resize(1024)
+      .resize(resize.width || 1024, resize.height, {
+        fit: resize != null ? "cover" : "contain",
+      })
       .flatten({ background: "#ffffff" })
       .jpeg({ mozjpeg: true, quality: 90 })
       .toBuffer();
