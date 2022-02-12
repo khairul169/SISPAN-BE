@@ -1,6 +1,7 @@
 const { Op, literal } = require("../services/database");
 const response = require("../services/response");
 const { models, insertOrUpdate } = require("../models");
+const { pushNotification } = require("../services/push-notification");
 
 const getAll = async (req, res) => {
   try {
@@ -79,6 +80,9 @@ const create = async (req, res) => {
       { userId: data.userId, recipientId: data.fromId },
       { updatedAt: Date.now(), isRead: false }
     );
+
+    const notifMsg = `${req.user.name}: ${message}`;
+    await pushNotification(data.userId, notifMsg);
 
     return response.success(res, result);
   } catch (err) {

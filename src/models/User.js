@@ -72,10 +72,10 @@ const User = sequelize.define(
         return this.role === "admin";
       },
     },
-    deviceId: {
-      type: Sequelize.STRING,
-      allowNull: true,
-    },
+    // deviceId: {
+    //   type: Sequelize.STRING,
+    //   allowNull: true,
+    // },
     googleId: {
       type: Sequelize.STRING,
       allowNull: true,

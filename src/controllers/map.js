@@ -7,7 +7,7 @@ const getAddress = async (req, res) => {
 
     const baseUrl = "https://us1.locationiq.com/v1/reverse.php";
     const params = {
-      key: "pk.973471a40585712232f93406e33f26ab",
+      key: process.env.LOCATIONIQ_KEY,
       format: "json",
       lat: latitude,
       lon: longitude,
