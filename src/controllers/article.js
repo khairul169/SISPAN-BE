@@ -12,7 +12,7 @@ const getAll = async (req, res) => {
     const filter = sanitizeObject({
       userId: query.user,
       categoryId: query.category,
-      name: query.name ? { [Op.like]: `%${query.name}%` } : undefined,
+      title: query.title ? { [Op.like]: `%${query.title}%` } : undefined,
     });
 
     // Item sorting
@@ -38,7 +38,7 @@ const getAll = async (req, res) => {
         { model: models.User },
         { model: models.ArticleCategory, as: "category" },
       ],
-      attributes: {exclude: ['content']},
+      attributes: { exclude: ["content"] },
       order,
       offset,
       limit,
