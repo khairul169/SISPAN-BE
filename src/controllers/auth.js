@@ -1,13 +1,11 @@
 const bcrypt = require("bcrypt");
+const { OAuth2Client } = require("google-auth-library");
 const { Op } = require("../services/database");
 const response = require("../services/response");
 const { models } = require("../models");
 const { generateJwt } = require("../services/jwt");
 
-const { OAuth2Client } = require("google-auth-library");
-const CLIENT_ID =
-  "210385753050-a2rr5r7hm1ic5jptn4s0e59lod4gp62d.apps.googleusercontent.com";
-const googleClient = new OAuth2Client(CLIENT_ID);
+const googleClient = new OAuth2Client(process.env.GOOGLE_AUTH_CLIENT_ID);
 
 /**
  * Auth Login
@@ -25,7 +23,7 @@ const login = async (req, res) => {
     } else {
       const ticket = await googleClient.verifyIdToken({
         idToken: googleToken,
-        audience: CLIENT_ID,
+        audience: process.env.GOOGLE_AUTH_CLIENT_ID,
       });
       const payload = ticket.getPayload();
       const googleId = payload.sub;
@@ -44,7 +42,6 @@ const login = async (req, res) => {
         }
 
         const username = payload.email.split("@")[0];
-        console.log(payload.email);
         const data = {
           googleId,
           username: username,
@@ -54,7 +51,6 @@ const login = async (req, res) => {
           password: "",
           role: "user",
         };
-        console.log(data);
 
         // Register google account
         const newUser = await models.User.create(data);

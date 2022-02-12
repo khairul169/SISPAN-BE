@@ -2,26 +2,15 @@ const { Op, literal } = require("../services/database");
 const response = require("../services/response");
 const { models, insertOrUpdate } = require("../models");
 
-const LATEST_MESSAGE_QUERY =
-  "(SELECT message FROM `messages` m \
-    WHERE (m.userId = `message_box`.`userId` OR m.userId = `message_box`.`recipientId`) \
-    AND (m.fromId = `message_box`.`userId` OR m.fromId = `message_box`.`recipientId`) \
-    ORDER BY m.id DESC LIMIT 1)";
-
 const getAll = async (req, res) => {
   try {
     const userId = req.user.id;
 
-    // const result = await models.Message.findAll({
-    //   where: { userId },
-    //   attributes: {
-    //     exclude: ["message"],
-    //     include: [[literal(LATEST_MESSAGE_QUERY), "message"]],
-    //   },
-    //   include: [{ model: models.User }, { model: models.User, as: "from" }],
-    //   group: ["fromId"],
-    //   order: [["createdAt", "desc"]],
-    // });
+    const LATEST_MESSAGE_QUERY =
+      "(SELECT message FROM `messages` m \
+        WHERE (m.userId = `message_box`.`userId` OR m.userId = `message_box`.`recipientId`) \
+        AND (m.fromId = `message_box`.`userId` OR m.fromId = `message_box`.`recipientId`) \
+        ORDER BY m.id DESC LIMIT 1)";
 
     const result = await models.MessageBox.findAll({
       where: { userId },
@@ -54,6 +43,13 @@ const getMessages = async (req, res) => {
       order: [["createdAt", "desc"]],
     });
 
+    await models.MessageBox.update(
+      { isRead: true },
+      {
+        where: { userId, recipientId: targetId, isRead: false },
+      }
+    );
+
     return response.success(res, result);
   } catch (err) {
     return response.error(res, err.message);
@@ -81,7 +77,7 @@ const create = async (req, res) => {
     await insertOrUpdate(
       models.MessageBox,
       { userId: data.userId, recipientId: data.fromId },
-      { updatedAt: Date.now() }
+      { updatedAt: Date.now(), isRead: false }
     );
 
     return response.success(res, result);

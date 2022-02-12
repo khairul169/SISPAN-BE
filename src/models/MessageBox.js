@@ -15,6 +15,10 @@ const MessageBox = sequelize.define(
     recipientId: {
       type: Sequelize.INTEGER,
     },
+    isRead: {
+      type: Sequelize.BOOLEAN,
+      defaultValue: false,
+    },
     updatedAt: {
       type: Sequelize.DATE,
     },
