@@ -16,6 +16,10 @@ const Transaction = sequelize.define(
       primaryKey: true,
       autoIncrement: true,
     },
+    no: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
     userId: {
       type: Sequelize.INTEGER,
     },
@@ -47,6 +51,22 @@ const Transaction = sequelize.define(
     //     return transactionStatus[this.status];
     //   },
     // },
+    latitude: {
+      type: Sequelize.DECIMAL(11, 2),
+      allowNull: true,
+    },
+    longitude: {
+      type: Sequelize.DECIMAL(11, 2),
+      allowNull: true,
+    },
+    address: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
+    phone: {
+      type: Sequelize.STRING,
+      allowNull: true,
+    },
   },
   {
     tableName: "transaction",

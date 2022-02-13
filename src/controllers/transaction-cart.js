@@ -148,12 +148,18 @@ const checkout = async (req, res) => {
     });
 
     const result = { id: null };
+    const userLocation = req.user.location;
+
+    if (!userLocation) {
+      throw new Error("Mohon atur alamat pengiriman terlebih dahulu.");
+    }
 
     await Promise.all(
       group.map(async (cart) => {
         // Create transaction data
         const transaction = await models.Transaction.create(
           {
+            no: `INV-${Date.now()}`,
             userId: req.user.id,
             sellerId: cart.user.id,
             total: cart.total,
@@ -161,6 +167,10 @@ const checkout = async (req, res) => {
             discount: 0,
             grandTotal: cart.total,
             status: "pending",
+            latitude: userLocation?.latitude,
+            longitude: userLocation?.longitude,
+            address: userLocation?.address,
+            phone: req.user.phone,
           },
           { transaction: tx }
         );
