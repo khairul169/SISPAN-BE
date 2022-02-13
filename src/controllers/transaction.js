@@ -2,6 +2,7 @@ const { models } = require("../models");
 const { sanitizeObject, pageFilter } = require("../services/utils");
 const response = require("../services/response");
 const { Op, literal } = require("../services/database");
+const { transactionStatus } = require("../models/Transaction");
 
 const getAll = async (req, res) => {
   try {
@@ -27,7 +28,7 @@ const getAll = async (req, res) => {
       }
     }
 
-    const result = await models.Transaction.findAndCountAll({
+    const transactionList = await models.Transaction.findAndCountAll({
       where: {
         ...filter,
         [Op.or]: [{ userId: req.user.id }, { sellerId: req.user.id }],
@@ -60,6 +61,14 @@ const getAll = async (req, res) => {
       limit,
     });
 
+    const result = {
+      count: transactionList.count,
+      rows: transactionList.rows.map((row) => ({
+        ...row.get({ plain: true }),
+        statusText: transactionStatus[row.status],
+      })),
+    };
+
     return response.success(res, result);
   } catch (err) {
     return response.error(res, err.message);
@@ -69,7 +78,7 @@ const getAll = async (req, res) => {
 const getTransaction = async (req, res) => {
   try {
     const { id } = req.params;
-    const result = await models.Transaction.findOne({
+    const transaction = await models.Transaction.findOne({
       where: { id },
       attributes: {
         include: [[literal("IF(sellerId=$1, 1, 0)"), "isSeller"]],
@@ -81,6 +90,9 @@ const getTransaction = async (req, res) => {
         { model: models.TransactionItem, as: "items", include: models.Product },
       ],
     });
+
+    const result = { ...transaction.get({ plain: true }) };
+    result.statusText = transactionStatus[result.status];
 
     return response.success(res, result);
   } catch (err) {

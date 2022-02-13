@@ -8,7 +8,7 @@ const ProductCategory = require("./ProductCategory");
 const Article = require("./Article");
 const ArticleCategory = require("./ArticleCategory");
 const TransactionCart = require("./TransactionCart");
-const Transaction = require("./Transaction");
+const { Transaction } = require("./Transaction");
 const TransactionItem = require("./TransactionItem");
 
 /**

@@ -54,4 +54,4 @@ const Transaction = sequelize.define(
   }
 );
 
-module.exports = Transaction;
+module.exports = { Transaction, transactionStatus };
