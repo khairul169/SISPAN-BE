@@ -1,5 +1,6 @@
 const { models } = require("../models");
 const { clamp, arrayGroupBy } = require("../services/utils");
+const { pushNotification } = require("../services/push-notification");
 const response = require("../services/response");
 const { col, sequelize } = require("../services/database");
 
@@ -206,6 +207,12 @@ const checkout = async (req, res) => {
             });
           })
         );
+
+        const sellerMsg = `${req.user.name} telah membeli produk anda. Silahkan konfirmasi transaksi lebih lanjut di Aplikasi SISPAN.`;
+        pushNotification(transaction.sellerId, sellerMsg);
+
+        const buyerMsg = `Pesanan anda telah diterima. Mohon tunggu penjual untuk konfirmasi lebih lanjut.`;
+        pushNotification(transaction.userId, buyerMsg);
       })
     );
 

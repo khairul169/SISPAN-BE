@@ -1,5 +1,6 @@
 const { models } = require("../models");
 const { sanitizeObject, pageFilter } = require("../services/utils");
+const { pushNotification } = require("../services/push-notification");
 const response = require("../services/response");
 const { Op, literal } = require("../services/database");
 const { transactionStatus } = require("../models/Transaction");
@@ -120,6 +121,7 @@ const update = async (req, res) => {
     }
 
     const { status } = req.body;
+    let pushMsg;
 
     switch (status) {
       case "processed":
@@ -131,6 +133,9 @@ const update = async (req, res) => {
             "Proses transaksi hanya dapat dilakukan oleh penjual."
           );
         }
+
+        pushMsg = `Pesanan anda dengan nomor #${transaction.no} telah diproses oleh penjual.`;
+        pushNotification(transaction.userId, pushMsg);
         break;
       case "completed":
         if (transaction.status !== "processed") {
@@ -154,12 +159,17 @@ const update = async (req, res) => {
           })
         );
 
+        pushMsg = `Transaksi dengan nomor #${transaction.no} telah dinyatakan selesai oleh pembeli.`;
+        pushNotification(transaction.sellerId, pushMsg);
         break;
 
       case "canceled":
         if (transaction.status === "completed") {
           throw new Error("Tidak dapat mengubah status transaksi.");
         }
+
+        pushMsg = `Transaksi #${transaction.no} telah dibatalkan.`;
+        pushNotification([transaction.userId, transaction.sellerId], pushMsg);
         break;
     }
 
