@@ -142,8 +142,6 @@ const update = async (req, res) => {
       photo = `uploads/photos/${req.file.filename}`;
     }
 
-    console.log('PHOTO', photo)
-
     const data = sanitizeObject({
       username,
       name,

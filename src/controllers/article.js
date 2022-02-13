@@ -99,7 +99,12 @@ const update = async (req, res) => {
       throw new Error("Article not found!");
     }
 
-    const { category, title, image, content } = req.body;
+    const { category, title, content } = req.body;
+    let image;
+
+    if (req.file) {
+      image = `uploads/articles/${req.file.filename}`;
+    }
 
     const data = sanitizeObject({
       categoryId: category,

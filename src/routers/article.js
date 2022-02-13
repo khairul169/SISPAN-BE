@@ -1,5 +1,9 @@
 const category = require("../controllers/article-category");
 const article = require("../controllers/article");
+const { upload, compress } = require("../services/file-upload");
+
+const IMG_DIR = "./public/uploads/articles";
+const imgUpload = upload(IMG_DIR, "article").single("image");
 
 module.exports = (router) => {
   // Article Category
@@ -11,7 +15,7 @@ module.exports = (router) => {
   // Article
   router.get("/article", article.getAll);
   router.get("/article/:articleId", article.getArticle);
-  router.post("/article", article.create);
+  router.post("/article", imgUpload, compress(), article.create);
   router.delete("/article/:articleId", article.destroy);
-  router.patch("/article/:articleId", article.update);
+  router.patch("/article/:articleId", imgUpload, compress(), article.update);
 };

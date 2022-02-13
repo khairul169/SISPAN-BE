@@ -13,6 +13,7 @@ const upload = (destPath, prefix) => {
     }),
     limits: {
       fileSize: 10240 * 1000,
+      fieldSize: 25 * 1024 * 1024,
     },
     fileFilter: function (_, file, cb) {
       const filetypes = /jpeg|jpg|png/;
