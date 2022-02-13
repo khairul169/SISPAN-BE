@@ -13,4 +13,5 @@ module.exports = (router) => {
   router.get("/transaction", transaction.getAll);
   router.get("/transaction/:id", transaction.getTransaction);
   router.patch("/transaction/:id", transaction.update);
+  router.delete("/transaction/:id", transaction.destroy);
 };
